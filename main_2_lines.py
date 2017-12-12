@@ -17,7 +17,7 @@ DIM = 2
 EPOCHS = 5000
 BATCH_SIZE = 128
 LR = 1e-2
-b=0
+b=0.2
 
 fc_net = TwoLayer(DIM)
 criterion = torch.nn.BCEWithLogitsLoss()
@@ -25,8 +25,8 @@ criterion = torch.nn.BCEWithLogitsLoss()
 optimizer = optim.SGD(fc_net.parameters(), lr=LR)
 
 w_1 = np.random.uniform(0, 1, DIM)
-# w_2 = np.random.uniform(0, 1, DIM)
-w_2=w_1
+w_2 = np.random.uniform(0, 1, DIM)
+
 
 intersection_point_x1=[1,-1*w_1[0]/w_1[1]]
 intersection_point_xm1=[-1,1*w_1[0]/w_1[1]]

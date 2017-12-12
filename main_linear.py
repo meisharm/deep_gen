@@ -80,7 +80,7 @@ def accuracy(pred,lab):
 for i in range(EPOCHS):
     optimizer.zero_grad()
 
-    points, labels = generate_points_round_tr(0.8, BATCH_SIZE) #small strip
+    points, labels = generate_points_tr(w_1,w_2, BATCH_SIZE,2) #small strip
     points = torch.from_numpy(points)
     labels = torch.from_numpy(labels)
 
@@ -96,7 +96,7 @@ for i in range(EPOCHS):
     acc= accuracy(predictions,labels)
 
     print("Iteration {} Loss {} Acc {}".format(i+1, loss.data[0], acc))
-view_points, _ = generate_points_round(0.8, 100000) #all
+view_points, _ = generate_points(w_1,w_2, 100000,2) #all
 
 p_x_r=[]
 p_y_r=[]
@@ -125,7 +125,7 @@ list_2x, list_2y = data_for_drow_line(w_2,b/2)
 plt.plot(p_x_r, p_y_r, 'ro',p_x_g, p_y_g, 'go')
 plt.axis([-1, 1, -1, 1])
 plt.show()
-view_points, view_lab = generate_points_round_tr(0.8, 100000) #all
+view_points, view_lab = generate_points_tr(w_1,w_2, 100000,2) #all
 
 p_x_r=[]
 p_y_r=[]
