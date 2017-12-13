@@ -16,17 +16,19 @@ plt.interactive(False)
 DIM = 2
 EPOCHS = 5000
 BATCH_SIZE = 128
-LR = 1e-2
+LR = 1e-3
 b=0.2
 
 fc_net = TwoLayer(DIM)
 criterion = torch.nn.BCEWithLogitsLoss()
 
-optimizer = optim.SGD(fc_net.parameters(), lr=LR)
+optimizer = optim.Adam(fc_net.parameters(), lr=LR)
 
 w_1 = np.random.uniform(0, 1, DIM)
+w_1[0]=np.random.uniform(0.9,1)
 w_2 = np.random.uniform(0, 1, DIM)
-w_2[0]=-1.0
+w_2[0]=np.random.uniform(0.,0.1)
+
 
 
 intersection_point_x1=[1,-1*w_1[0]/w_1[1]]
@@ -97,94 +99,96 @@ for i in range(EPOCHS):
     acc= accuracy(predictions,labels)
 
     print("Iteration {} Loss {} Acc {}".format(i+1, loss.data[0], acc))
-view_points, _ = generate_points(w_1,w_2, 100000,2,b=0.2) #all
+    if i%100==0:
 
-p_x_r=[]
-p_y_r=[]
-p_x_g=[]
-p_y_g=[]
-p_x_y=[]
-p_y_y=[]
-p_x_y1=[]
-p_y_y1=[]
-view_points = torch.from_numpy(view_points)
+        view_points, _ = generate_points(w_1,w_2, 100000,2,b=0.2) #all
 
-view_points = view_points.type(torch.FloatTensor)
-view_points = Variable(view_points)
-fc_net.eval()
-a=fc_net(view_points)
-point_pred = a.data > 0.
-for i in range(len(view_points)):
-    if point_pred[i]==1:
-        p_x_y.append(view_points[i].data[0])
-        p_y_y.append(view_points[i].data[1])
-    else:
-        p_x_y1.append(view_points[i].data[0])
-        p_y_y1.append(view_points[i].data[1])
-list_1x, list_1y = data_for_drow_line(w_1,b/2)
-list_2x, list_2y = data_for_drow_line(w_2,b/2)
+        p_x_r=[]
+        p_y_r=[]
+        p_x_g=[]
+        p_y_g=[]
+        p_x_y=[]
+        p_y_y=[]
+        p_x_y1=[]
+        p_y_y1=[]
+        view_points = torch.from_numpy(view_points)
+
+        view_points = view_points.type(torch.FloatTensor)
+        view_points = Variable(view_points)
+        fc_net.eval()
+        a=fc_net(view_points)
+        point_pred = a.data > 0.
+        for i in range(len(view_points)):
+          if point_pred[i]==1:
+            p_x_y.append(view_points[i].data[0])
+            p_y_y.append(view_points[i].data[1])
+          else:
+            p_x_y1.append(view_points[i].data[0])
+            p_y_y1.append(view_points[i].data[1])
+        list_1x, list_1y = data_for_drow_line(w_1,b/2)
+        list_2x, list_2y = data_for_drow_line(w_2,b/2)
 # list_3x, list_3y = data_for_drow_line(w_1,0.1)
 # list_4x, list_4y = data_for_drow_line(w_2,0.1)
 #all_x,all_y=line_from_two(w_1,w_2,0.1,0.1)
 
-plt.plot(p_x_y, p_y_y, 'yo',p_x_y1, p_y_y1, 'yo')
-plt.axis([-1, 1, -1, 1])
-plt.show()
-view_points, view_lab = generate_points(w_1,w_2, 100000,2,b=0) #all
+    # plt.plot(p_x_y, p_y_y, 'yo',p_x_y1, p_y_y1, 'yo')
+    # plt.axis([-1, 1, -1, 1])
+    # plt.show()
+        view_points, view_lab = generate_points(w_1,w_2, 100000,2,b=0) #all
 
-p_x_r=[]
-p_y_r=[]
-p_x_g=[]
-p_y_g=[]
-view_points = torch.from_numpy(view_points)
+        p_x_r=[]
+        p_y_r=[]
+        p_x_g=[]
+        p_y_g=[]
+        view_points = torch.from_numpy(view_points)
 
-view_points = view_points.type(torch.FloatTensor)
-view_points = Variable(view_points)
-fc_net.eval()
-a=fc_net(view_points)
-point_pred = a.data > 0.
-for i in range(len(view_points)):
-    if point_pred[i]==1:
-        p_x_r.append(view_points[i].data[0])
-        p_y_r.append(view_points[i].data[1])
-    else:
-        p_x_g.append(view_points[i].data[0])
-        p_y_g.append(view_points[i].data[1])
-list_1x, list_1y = data_for_drow_line(w_1,b/2)
-list_2x, list_2y = data_for_drow_line(w_2,b/2)
+        view_points = view_points.type(torch.FloatTensor)
+        view_points = Variable(view_points)
+        fc_net.eval()
+        a=fc_net(view_points)
+        point_pred = a.data > 0.
+        for i in range(len(view_points)):
+          if point_pred[i]==1:
+            p_x_r.append(view_points[i].data[0])
+            p_y_r.append(view_points[i].data[1])
+          else:
+            p_x_g.append(view_points[i].data[0])
+            p_y_g.append(view_points[i].data[1])
+        list_1x, list_1y = data_for_drow_line(w_1,b/2)
+        list_2x, list_2y = data_for_drow_line(w_2,b/2)
 # list_3x, list_3y = data_for_drow_line(w_1,0.1)
 # list_4x, list_4y = data_for_drow_line(w_2,0.1)
 #all_x,all_y=line_from_two(w_1,w_2,0.1,0.1)
 
-plt.plot(p_x_r, p_y_r, 'ro',p_x_g, p_y_g, 'go',p_x_y, p_y_y, 'yo',p_x_y1, p_y_y1, 'yo')
-plt.axis([-1, 1, -1, 1])
-plt.show()
-view_points, view_lab = generate_points(w_1,w_2, 100000,2,b=0) #all
+        plt.plot(p_x_r, p_y_r)#, 'ro',p_x_g, p_y_g, 'go',p_x_y, p_y_y, 'yo',p_x_y1, p_y_y1, 'yo'
+        plt.axis([-1, 1, -1, 1])
+        plt.show()
+        view_points, view_lab = generate_points(w_1,w_2, 100000,2,b=0) #all
 
-p_x_r=[]
-p_y_r=[]
-p_x_g=[]
-p_y_g=[]
-view_points = torch.from_numpy(view_points)
+        p_x_r=[]
+        p_y_r=[]
+        p_x_g=[]
+        p_y_g=[]
+        view_points = torch.from_numpy(view_points)
 
-view_points = view_points.type(torch.FloatTensor)
-view_points = Variable(view_points)
-fc_net.eval()
-a=fc_net(view_points)
-point_pred = a.data > 0.
-for i in range(len(view_points)):
-    if point_pred[i]==1:
-        p_x_r.append(view_points[i].data[0])
-        p_y_r.append(view_points[i].data[1])
-    else:
-        p_x_g.append(view_points[i].data[0])
-        p_y_g.append(view_points[i].data[1])
-list_1x, list_1y = data_for_drow_line(w_1,b/2)
-list_2x, list_2y = data_for_drow_line(w_2,b/2)
+        view_points = view_points.type(torch.FloatTensor)
+        view_points = Variable(view_points)
+        fc_net.eval()
+        a=fc_net(view_points)
+        point_pred = a.data > 0.
+        for i in range(len(view_points)):
+          if point_pred[i]==1:
+            p_x_r.append(view_points[i].data[0])
+            p_y_r.append(view_points[i].data[1])
+          else:
+            p_x_g.append(view_points[i].data[0])
+            p_y_g.append(view_points[i].data[1])
+        list_1x, list_1y = data_for_drow_line(w_1,b/2)
+        list_2x, list_2y = data_for_drow_line(w_2,b/2)
 # list_3x, list_3y = data_for_drow_line(w_1,0.1)
 # list_4x, list_4y = data_for_drow_line(w_2,0.1)
 #all_x,all_y=line_from_two(w_1,w_2,0.1,0.1)
 
-plt.plot(p_x_r, p_y_r, 'ro',p_x_g, p_y_g, 'go',list_1x, list_1y,'b-',list_2x, list_2y,'b-')
-plt.axis([-1, 1, -1, 1])
-plt.show()
+        plt.plot(p_x_r, p_y_r, 'ro',p_x_g, p_y_g, 'go',list_1x, list_1y,'b-',list_2x, list_2y,'b-')
+        plt.axis([-1, 1, -1, 1])
+        plt.show()

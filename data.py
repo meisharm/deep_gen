@@ -37,8 +37,8 @@ def generate_points_round(r, num_samples,c_x=0, c_y=0):
     labels = np.zeros([num_samples, 1])
     q = 0
     while q < num_samples:
-        point = np.random.uniform(-1, 1, 2)
-        cls = np.add((point[0] - c_x) ** 2, (points[1] - c_y) ** 2)
+        point = np.random.uniform(-10, 10, 2)
+        cls = np.add((point[0] - c_x) ** 2, (point[1] - c_y) ** 2)
         cls = np.sum(cls)
         if cls <= r:
             points[q] = point
@@ -49,7 +49,23 @@ def generate_points_round(r, num_samples,c_x=0, c_y=0):
             labels[q] = 0
             q = q + 1
     return points, labels
-
+def generate_points_round_no_lab(r, num_samples,c_x=0, c_y=0):
+    points = np.zeros([num_samples, 2])
+    labels = np.zeros([num_samples, 1])
+    q = 0
+    while q < num_samples:
+        point = np.random.uniform(-10, 10, 2)
+        #cls = np.add((point[0] - c_x) ** 2, (point[1] - c_y) ** 2)
+        cls =1
+        if cls <= r:
+            points[q] = point
+            labels[q] = 1
+            q = q + 1
+        if cls > r:
+            points[q] = point
+            labels[q] = 0
+            q = q + 1
+    return points, labels
 def generate_points_round_tr(r, num_samples,c_x=0, c_y=0):
     points = np.zeros([num_samples, 2])
     labels = np.zeros([num_samples, 1])
@@ -58,7 +74,7 @@ def generate_points_round_tr(r, num_samples,c_x=0, c_y=0):
          point = np.random.uniform(-0.1, 0.1, 2)
          point[0] = np.random.uniform(-1, 1)
 
-         cls = np.add((point[0]-c_x)**2,(points[1]-c_y)**2)
+         cls = np.add((point[0]-c_x)**2,(point[1]-c_y)**2)
          cls=np.sum(cls)
          if cls <= r:
                 points[q] = point

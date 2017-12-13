@@ -8,15 +8,17 @@ import torch.optim as optim
 from data import generate_points
 from data import generate_points_tr
 from data import generate_points_round
+from data import generate_points_round_no_lab
+
 from data import generate_points_round_tr
 
 
 from nets import TwoLayer
 plt.interactive(False)
 DIM = 2
-EPOCHS = 5000
+EPOCHS = 50000
 BATCH_SIZE = 128
-LR = 1e-2
+LR = 1e-3
 b=0
 
 fc_net = TwoLayer(DIM)
@@ -80,7 +82,7 @@ def accuracy(pred,lab):
 for i in range(EPOCHS):
     optimizer.zero_grad()
 
-    points, labels = generate_points_round_tr(0.8, BATCH_SIZE) #small strip
+    points, labels = generate_points_round_tr(0.2, BATCH_SIZE) #small strip
     points = torch.from_numpy(points)
     labels = torch.from_numpy(labels)
 
@@ -96,7 +98,7 @@ for i in range(EPOCHS):
     acc= accuracy(predictions,labels)
 
     print("Iteration {} Loss {} Acc {}".format(i+1, loss.data[0], acc))
-view_points, _ = generate_points_round(0.8, 100000) #all
+view_points, _ = generate_points_round(0.5, 100000) #all
 
 p_x_r=[]
 p_y_r=[]
@@ -125,7 +127,7 @@ list_2x, list_2y = data_for_drow_line(w_2,b/2)
 plt.plot(p_x_r, p_y_r, 'ro',p_x_g, p_y_g, 'go')
 plt.axis([-1, 1, -1, 1])
 plt.show()
-view_points, view_lab = generate_points_round_tr(0.8, 100000) #all
+view_points, view_lab = generate_points_round_no_lab(0.5, 100000) #all
 
 p_x_r=[]
 p_y_r=[]
@@ -135,9 +137,9 @@ view_points = torch.from_numpy(view_points)
 
 view_points = view_points.type(torch.FloatTensor)
 view_points = Variable(view_points)
-# fc_net.eval()
-# a=fc_net(view_points)
-point_pred = view_lab
+fc_net.eval()
+a=fc_net(view_points)
+point_pred = a.data > 0.
 for i in range(len(view_points)):
     if point_pred[i]==1:
         p_x_r.append(view_points[i].data[0])
